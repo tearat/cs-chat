@@ -18,8 +18,8 @@ namespace ExampleSQLApp
 {
     public partial class MainForm : Form
     {
-        private string server_url = "http://get.ar";
-        private string server_url_post = "http://get.ar/post.php";
+        private string serverUrl = "http://get.ar";
+        private string serverUrlPost = "http://get.ar/post.php";
         private static readonly HttpClient client = new HttpClient();
 
         private class Message
@@ -38,35 +38,33 @@ namespace ExampleSQLApp
         private async void LoadPosts()
         {
             listLabels.Items.Clear();
-            HttpResponseMessage response = await client.GetAsync(server_url);
+            HttpResponseMessage response = await client.GetAsync(serverUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             Message[] parsed = JsonConvert.DeserializeObject<Message[]>(responseBody);
 
-            int count = 0;
             foreach (Message message in parsed)
             {
                 string title = "";
                 title += message.name + ": " + message.message;
                 listLabels.Items.Add(title);
-                count++;
             }
         }
 
         private async void SendMessage()
         {
-            if (textBox_name.Text != "" && textBox_message.Text != "")
+            if (textBoxName.Text != "" && textBoxMessage.Text != "")
             {
                 var message = new Dictionary<string, string>
                 {
-                    { "name", textBox_name.Text },
-                    { "message", textBox_message.Text }
+                    { "name", textBoxName.Text },
+                    { "message", textBoxMessage.Text }
                 };
 
-                textBox_message.Text = "";
+                textBoxMessage.Text = "";
 
                 var content = new FormUrlEncodedContent(message);
-                var response = await client.PostAsync(server_url_post, content);
+                var response = await client.PostAsync(serverUrlPost, content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 LoadPosts();
             }
